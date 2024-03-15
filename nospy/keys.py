@@ -59,3 +59,15 @@ def npubToHex(npub: str) -> Union[None, str]:
     keyval = ''.join('{:02x}'.format(byte) for byte in decoded)
 
     return keyval
+
+
+def hexToNpub(hex: str) -> Union[None, str]:
+    """ provide a hex-encoded public key, and get back the bech32 npub-formatted string """
+
+    # Decode the hex-encoded public key
+    decoded = bytes.fromhex(hex)
+
+    # Convert the public key to bech32
+    npub = bech32.bech32_encode("npub", bech32.convertbits(decoded, 8, 5, True))
+
+    return npub
