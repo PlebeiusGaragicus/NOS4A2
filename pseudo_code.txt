@@ -1,0 +1,70 @@
+DMs = get DMs.
+For each DM in DMs:
+  Store DM in database.
+  Mark DM as new.
+  Sender = get sender of DM.
+  If Sender has exceeded rate limit:
+     Send rate limit exceeded message to sender.
+     Continue to next DM.
+  Check sender's credit availability.
+  If sender has no credits left:
+     If a stored invoice exists for sender:
+        If stored invoice remains valid:
+           Send stored invoice to sender.
+        Else:
+           Prepare a new invoice for sender.
+           Store new invoice.
+           Send new invoice to sender.
+  Else:
+     If the first character of the DM is '/':
+        Command = get command from DM.
+        If Command == 'NEW':
+           Process NEW command.
+        ElseIf Command == 'BALANCE':
+           Process BALANCE command.
+        ElseIf Command == 'HELP':
+            Process HELP command.
+     Else:
+        Conversation = load conversation history with Sender.
+        Reply = process reply for sender's DM with the help of LLM using the Conversation.
+        Send reply to sender.
+        Decrease sender's credit with 1.
+    Increase user's rate limit count.
+
+
+
+
+### NO RATE limit
+
+DMs = get DMs.
+For each DM in DMs:
+  Store DM in database.
+  Mark DM as new.
+  Sender = get sender of DM.
+  Check sender's credit availability.
+  If sender has no credits left:
+     If a stored invoice exists for sender:
+        If stored invoice remains valid:
+           Send stored invoice to sender.
+        Else:
+           Prepare a new invoice for sender.
+           Store new invoice.
+           Send new invoice to sender.
+  Else:
+     If the first character of the DM is '/':
+        Command = get command from DM.
+        If Command == 'NEW':
+           Process NEW command.
+        ElseIf Command == 'BALANCE':
+           Process BALANCE command.
+        ElseIf Command == 'HELP':
+            Process HELP command.
+     Else:
+        Conversation = load conversation history with Sender.
+        Reply = process reply for sender's DM with the help of LLM using the Conversation.
+        Send reply to sender.
+        Decrease sender's credit with 1.
+
+
+---
+

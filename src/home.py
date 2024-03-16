@@ -47,10 +47,6 @@ def run_home():
 
             home()
 
-            # st.write(time.time())
-            # time.sleep(1)
-            # st.rerun()
-
 
 def run_inbox():
     cols2 = st.columns((1, 1, 1))
@@ -65,10 +61,6 @@ def run_inbox():
             #     st.session_state.run_loop = False
 
             inbox()
-
-            # st.write(time.time())
-            # time.sleep(1)
-            # st.rerun()
 
 
 
@@ -138,11 +130,7 @@ def inbox():
             # name = hex_following[from_pub]['name'] # look up the name we gave this person
 
             # st.write(event_msg.event.created_at)
-            # st.write(event_msg.event.content)
-
-            # msg = decrypt_direct_message(event_msg.event.content, prv)
             msg = prv.decrypt_message(event_msg.event.content, from_pub)
-
             st.write(msg)
 
 
@@ -158,52 +146,27 @@ def home():
     # get the list of npubs we are following...
     following = st.session_state.settings["following"]
 
-    print(following)
-
     following = [{"name": p[1]['name'], "p": p[0]} for p in following]
 
-    st.write(following)
-
-
-    # look for any entries that don't have a name, and give them a name (e.g. npub18~a2xw)
-    # for f in following:
-    #     npub = f['p']
-
-    #     if f['name'] is None:
-    #         f['name'] = f"{npub[:6]}~{npub[-4:]}"
 
     # convert the dict so that the public keys are hex-encoded - because that's what the relay manager expects
     hex_following = {npubToHex(f['p']) for f in following}
 
     st.write(hex_following)
-    # st.stop()
 
     # This is our filter the tells the relay what we're looking for
-    # filters = Filters(
-    #     [
-    #         Filter(
-    #             authors=list(hex_following),
-    #             kinds=[EventKind.TEXT_NOTE],
-    #             since=int(time.time()) - 600, # 10 minutes ago
-    #         )
-    #     ]
-    # )
+    filters = Filters(
+        [
+            Filter(
+                authors=list(hex_following),
+                kinds=[EventKind.TEXT_NOTE],
+                since=int(time.time()) - 600, # 10 minutes ago
+            )
+        ]
+    )
 
 
-    prv = st.session_state.settings["private_key"]
-
-    my_pubkey = private_to_public(prv)
-
-
-
-
-
-    inbox_mode = True
-    if inbox_mode:
-        # pubkey = getPubKey(Config.get_instance().private_key)
-        filters = Filters([Filter(tags={'p': {my_pubkey}}, kinds=[EventKind.ENCRYPTED_DIRECT_MESSAGE])])
-    else:
-        filters = Filters([Filter(authors=list(hex_following.keys()), kinds=[EventKind.TEXT_NOTE])])
+    filters = Filters([Filter(authors=list(hex_following.keys()), kinds=[EventKind.TEXT_NOTE])])
 
     subscription_id = uuid.uuid1().hex
 
