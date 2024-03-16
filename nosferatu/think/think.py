@@ -1,47 +1,19 @@
+import logging
+logger = logging.getLogger("nospy")
+
 from pymongo import MongoClient
 
-
-from nosferatu.common import cprint, Colors
-
-        
-
-def create_invoice():
-    invoice_dict = {
-        "type": "invoice",
-        "message": "Your credits are too low to reply. Pay this invoice to add 100 credits and continue the conversation.",
-        "link": "<Invoice Link>",
-        "credits": 100
-    }
-    return invoice_dict
-
-
-def process_reply(dm):
-    return dm + " was processed successfully"
-
-
-def process_new_command():
-    return "New command processed successfully"
-
-
-def process_balance_command():
-    return "Balance command processed successfully"
-
-
-def process_help_command():
-    return "Help command processed successfully"
+from nosferatu.think.invoice import create_invoice, check_credits, decrease_credits
+from nosferatu.think.inference import process_reply
+from nosferatu.think.commands import (
+    process_new_command,
+    process_balance_command,
+    process_help_command
+)
 
 
 def get_sender():
     return "user_10101"
-
-
-def check_credits(sender):
-    return 100
-
-
-def decrease_credits(sender):
-    pass
-
 
 
 def processor(queue, response_queue):
@@ -89,5 +61,3 @@ def processor(queue, response_queue):
                 else:
                     # generate invoice and place in response queue
                     response_queue.put(create_invoice())
-
-

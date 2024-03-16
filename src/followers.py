@@ -13,7 +13,7 @@ from nostr.relay_manager import RelayManager
 from nostr.message_type import ClientMessageType
 from nostr.key import PublicKey
 
-from nospy.keys import npubToHex, hexToNpub
+from src.keys import npubToHex, hexToNpub
 
 from src.VERSION import VERSION
 

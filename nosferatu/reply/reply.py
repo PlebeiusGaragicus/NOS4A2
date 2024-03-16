@@ -1,14 +1,17 @@
+import logging
+logger = logging.getLogger("nospy")
+
 from pymongo import MongoClient
 
-from nosferatu.common import cprint, Colors
-
-##################################
 
 def send_response(response, sender):
-    cprint(f"Sending response to {sender}: {response}", Colors.ORANGE)
+    logger.debug(f"Sending response to {sender}: {response}")
 
 # Sender process
 def sender(response_queue):
+    logger.error("sender() not yet implemented")
+    exit(1)
+
     while True:
         if not response_queue.empty():
             response = response_queue.get()

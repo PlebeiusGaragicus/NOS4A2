@@ -3,20 +3,20 @@ from dotenv import load_dotenv
 from multiprocessing import Process, Queue
 
 import logging
+logger = logging.getLogger("nospy")
+
 from nosferatu.logger import setup_logging
 
-from nosferatu.common import cprint, Colors
-from nosferatu.listen import listener
-from nosferatu.process import processor
-from nosferatu.reply import sender
+from nosferatu.listen.listen import listener
+from nosferatu.think.think import processor
+from nosferatu.reply.reply import sender
 
 
 if __name__ == "__main__":
-    cprint("...the bots are coming...", Colors.GREEN)
     load_dotenv()
-
     setup_logging()
-    logger = logging.getLogger("nospy")
+    logger.debug("Starting Nosferatu...")
+
 
     bots = [
         "NOSFATTY"
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         # sender_process.join()
 
     except KeyboardInterrupt:
-        cprint("Terminating...", Colors.RED)
+        logger.warning("Terminating...")
         listener_process.terminate()
         # processor_process.terminate()
         # sender_process.terminate()

@@ -5,6 +5,7 @@ import uuid
 import ssl
 import datetime
 import logging
+logger = logging.getLogger("nospy")
 
 from nostr.filter import Filter, Filters
 from nostr.event import Event, EventKind
@@ -12,20 +13,13 @@ from nostr.relay_manager import RelayManager
 from nostr.message_type import ClientMessageType
 from nostr.key import PrivateKey, PublicKey
 
-
 from pymongo import MongoClient
-
-
 
 from nosferatu.common import cprint, Colors
 
 
-def get_dm():
-    # return "Hello, World!"
-    return input("Enter a direct message: ")
 
 
-# Listener process
 def listener(queue):
     client = MongoClient('localhost', 27017)
     db = client['mydatabase']
