@@ -1,36 +1,6 @@
-import os
-import time
-import datetime
-import json
-import uuid
-import ssl
-
 import streamlit as st
 
-from nostr.filter import Filter, Filters
-from nostr.event import Event, EventKind
-from nostr.relay_manager import RelayManager
-from nostr.message_type import ClientMessageType
-from nostr.key import PublicKey
-
-from src.keys import npubToHex, hexToNpub
-
-from src.VERSION import VERSION
-
-from src.common import (
-    cprint,
-    Colors,
-    get,
-    set,
-    not_init,
-    is_init,
-)
-
-from src.interface import column_fix
-
-
-from src.settings import load_settings, save_settings
-
+from src.settings import save_settings
 
 
 def add_new_follower(name, npub):
@@ -81,7 +51,7 @@ def unfollow(p):
 def follower_component():
     ### FOLLOWING
     st.header("", divider="rainbow")
-    st.markdown(f"## :orange[Following:]")
+    st.markdown(f"### :blue[Following:]")
 
     cols2 = st.columns((1, 1, 1))
 
@@ -101,13 +71,11 @@ def follower_component():
                 unfollow(unfollow_p)
 
     for p in st.session_state.settings["following"]:
-        # st.write(p)
-
-
-        # st.divider()
         # st.text_input(label=f":green[{p['name']}]", value=p['p'])
-        st.write(f":green[{p['name']}]", " : ", f":blue[{p['npub']}]")
-        # st.write(p['p'])
-        # st.button(":red[delete]", key=f"delete_{p}", on_click=unfollow, args=(p['p'],))
+        # short_pub = p["npub"][:10] + "..." + p["npub"][-10:]
+        with st.container(border=True):
+            # st.write(f":green[{p['name']}]", " : ", f":blue[{short_pub}]")
+            st.write(f":green[{p['name']}]")
+            st.write(f":blue[{p["npub"]}]")
 
-    
+            st.button(":red[delete]", key=f"delete_{p}", on_click=unfollow, args=(p['npub'],))

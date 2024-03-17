@@ -13,7 +13,7 @@ from nostr.relay_manager import RelayManager
 from nostr.message_type import ClientMessageType
 from nostr.key import PublicKey
 
-from nospy.keys import npubToHex, hexToNpub
+from src.keys import npubToHex, hexToNpub
 
 from src.VERSION import VERSION
 
@@ -65,9 +65,8 @@ def remove_relay(url):
 
 
 def relay_component():
-    ### RELAYS
     st.header("", divider="rainbow")
-    st.markdown(f"## :orange[Relays:]")
+    st.markdown(f"### :green[Relays:]")
 
     cols2 = st.columns((1, 1, 1))
 
@@ -89,4 +88,8 @@ def relay_component():
 
     for r in st.session_state.settings["relays"]:
         # st.text_input(label="relay", value=r)
-        st.write(f":green[{r['url']}]")
+        read = "✅" if r["read"] else "❌"
+        write = "✅" if r["write"] else "❌"
+        with st.container(border=True):
+            st.write(f":green[{r['url']}]")
+            st.write(f"Read: {read} --- Write: {write}")

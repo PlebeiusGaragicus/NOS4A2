@@ -45,7 +45,7 @@ For each DM in DMs:
   If sender has no credits left:
      If a stored invoice exists for sender:
         If stored invoice remains valid:
-           Send stored invoice to sender.
+           Send stored invoice to sender. 
         Else:
            Prepare a new invoice for sender.
            Store new invoice.

@@ -1,22 +1,6 @@
-import os
-import time
-import datetime
-import json
-import uuid
-import ssl
-
 import streamlit as st
 
-from nostr.filter import Filter, Filters
-from nostr.event import Event, EventKind
-from nostr.relay_manager import RelayManager
-from nostr.message_type import ClientMessageType
-from nostr.key import PublicKey
-
-from nospy.keys import npubToHex, hexToNpub
-
 from src.VERSION import VERSION
-
 from src.common import (
     cprint,
     Colors,
@@ -26,12 +10,18 @@ from src.common import (
     is_init,
 )
 
-from src.interface import column_fix
+from src.interface import column_fix, centered_button_trick, center_text
+from src.settings import load_settings, load_settings_files
 
-from src.settings import load_settings, save_settings
-from src.followers import add_new_follower, unfollow, follower_component
-from src.relays import relay_component
-from src.home import run_home, run_inbox
+from src.components.followers import follower_component
+from src.components.relays import relay_component
+from src.components.status import status_component
+from src.components.keys import keys_component
+from src.components.publish import post_component
+from src.components.new_bot import new_bot_component
+from src.components.fetch_inbox import fetch_inbox
+
+# from src.components.home import run_home, run_inbox
 
 
 
@@ -44,43 +34,68 @@ def init_if_needed():
     st.session_state.setup = True
     st.session_state.run_loop = False
 
-    load_settings()
+    # if not_init("bots"):
+    load_settings_files()
+
+    # st.session_state.selected_bot = st.selectbox("Select Bot", st.session_state.bots)
+    # if st.session_state.selected_bot is not None:
+    #     load_settings()
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-npub = "npub1gf0nzcjm6ug55wf9qxg4829237erxa00mzmcpzpd06a02xlk86xq33r3ht"
 
 def main_page():
     column_fix()
     cprint("\nmain()\n", Colors.YELLOW)
-    with st.popover(":red[session state]"):
-        st.write(st.session_state)
-    st.divider()
+
+    with centered_button_trick():
+        st.header(":red[NOS]:green[4]:blue[A2] 🧛🏻‍♂️")
+        st.caption(f"v{VERSION}")
+
+    # center_text("p", ":red[NOS]:green[4]:blue[A2]")
+
+    # st.header(":red[NOS]:green[4]:blue[A2]")
 
 
-    ### BOT SETTINGS
-    st.write(f"nsec: `{get('settings')['private_key']}`")
-    st.write(npub)
 
 
-    follower_component()
-    relay_component()
+    cside = st.columns((1, 1))
+    with cside[0]:
+    # with centered_button_trick():
+        st.session_state.selected_bot = st.selectbox("Select Bot", st.session_state.bots)
+    
+    with cside[1]:
+        new_bot_component()
+                    
 
+    if st.session_state.selected_bot is not None:
+        load_settings()
+
+    cols = st.columns((1, 1))
+
+    with cols[0]:
+        keys_component()
+
+    with cols[1]:
+        status_component()
+
+    cols2 = st.columns((1, 1))
+    with cols2[0]:
+        follower_component()
+    with cols2[1]:
+        relay_component()
+
+    post_component()
+
+    fetch_inbox()
 
 
 
     ### RUN LOOP (aka home)
-    st.header("", divider="rainbow")
+    # st.header("", divider="rainbow")
     # run_home()
-    run_inbox()
+    # run_inbox()
+    st.divider()
+    with st.popover(":red[session state]"):
+        st.write(st.session_state)
