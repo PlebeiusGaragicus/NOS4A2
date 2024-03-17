@@ -1,7 +1,7 @@
 import streamlit as st
 
-from src.VERSION import VERSION
-from src.common import (
+from admin_panel.VERSION import VERSION
+from admin_panel.common import (
     cprint,
     Colors,
     get,
@@ -10,16 +10,16 @@ from src.common import (
     is_init,
 )
 
-from src.interface import column_fix, centered_button_trick, center_text
-from src.settings import load_settings, load_settings_files
+from admin_panel.interface import column_fix, centered_button_trick, center_text
+from admin_panel.settings import load_settings, load_settings_files
 
-from src.components.followers import follower_component
-from src.components.relays import relay_component
-from src.components.status import status_component
-from src.components.keys import keys_component
-from src.components.publish import post_component
-from src.components.new_bot import new_bot_component
-from src.components.fetch_inbox import fetch_inbox
+from admin_panel.components.followers import follower_component
+from admin_panel.components.relays import relay_component
+from admin_panel.components.status import status_component
+from admin_panel.components.keys import keys_component
+from admin_panel.components.publish import post_component
+from admin_panel.components.new_bot import new_bot_component
+from admin_panel.components.fetch_inbox import fetch_inbox
 
 # from src.components.home import run_home, run_inbox
 

@@ -13,11 +13,11 @@ from nostr.relay_manager import RelayManager
 from nostr.message_type import ClientMessageType
 from nostr.key import PublicKey
 
-from src.keys import npubToHex, hexToNpub
+from admin_panel.keys import npubToHex, hexToNpub
 
-from src.VERSION import VERSION
+from admin_panel.VERSION import VERSION
 
-from src.common import (
+from admin_panel.common import (
     cprint,
     Colors,
     get,
@@ -26,9 +26,9 @@ from src.common import (
     is_init,
 )
 
-from src.interface import column_fix
+from admin_panel.interface import column_fix
 
-from src.settings import load_settings, save_settings
+from admin_panel.settings import load_settings, save_settings
 
 
 

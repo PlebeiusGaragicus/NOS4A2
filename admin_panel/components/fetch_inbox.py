@@ -14,9 +14,9 @@ from nostr.relay_manager import RelayManager
 from nostr.message_type import ClientMessageType
 from nostr.key import PublicKey, PrivateKey
 
-from src.keys import npubToHex, hexToNpub
+from admin_panel.keys import npubToHex, hexToNpub
 
-from src.VERSION import VERSION
+from admin_panel.VERSION import VERSION
 
 
 

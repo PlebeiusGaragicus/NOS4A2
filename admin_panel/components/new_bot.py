@@ -3,8 +3,8 @@ import json
 
 import streamlit as st
 
-from src.interface import column_fix, centered_button_trick, center_text
-from src.settings import load_settings, load_settings_files
+from admin_panel.interface import column_fix, centered_button_trick, center_text
+from admin_panel.settings import load_settings, load_settings_files
 
 def new_bot_component():
     with centered_button_trick():

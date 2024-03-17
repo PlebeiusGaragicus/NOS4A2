@@ -9,7 +9,7 @@ from nostr.event import Event
 from nostr.relay_manager import RelayManager
 from nostr.key import PrivateKey
 
-from src.common import get
+from admin_panel.common import get
 
 
 def connect_to_relays() -> RelayManager:

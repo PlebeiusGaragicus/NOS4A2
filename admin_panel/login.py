@@ -5,9 +5,9 @@ import time
 import streamlit as st
 import streamlit_authenticator as stauth
 
-from src.common import ASSETS_PATH
-from src.main import main_page, init_if_needed
-from src.common import not_init, get, cprint, Colors
+from admin_panel.common import ASSETS_PATH
+from admin_panel.main import main_page, init_if_needed
+from admin_panel.common import not_init, get, cprint, Colors
 
 cprint(">>> Streamlit Server rerun~!", Colors.CYAN)
 

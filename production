@@ -4,4 +4,4 @@ source venv/bin/activate
 
 args="--server.address 0.0.0.0 --server.headless true"
 
-streamlit run $args run_streamlit.py
+streamlit run $args launch_adminpanel.py

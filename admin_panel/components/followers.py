@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.settings import save_settings
+from admin_panel.settings import save_settings
 
 
 def add_new_follower(name, npub):

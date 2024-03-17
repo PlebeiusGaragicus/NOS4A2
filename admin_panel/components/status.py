@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.common import get
+from admin_panel.common import get
 
 def status_component():
     st.header("", divider="rainbow")
