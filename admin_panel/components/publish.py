@@ -32,7 +32,7 @@ def post_note(content: str):
     relay_manager = connect_to_relays()
 
     priv = PrivateKey( bytes.fromhex(get('settings')['private_key']) )
-    event = Event(priv.public_key.hex(), content)
+    event = Event(content, priv.public_key.hex())
     priv.sign_event(event)
 
     logger.debug("Publishing event...")
