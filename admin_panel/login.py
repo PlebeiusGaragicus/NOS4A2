@@ -27,8 +27,8 @@ def login_router_page():
     st.set_page_config(
         # page_title="" if os.getenv("DEBUG", False) else "NOS4A2",
         page_title="NOS4A2",
-        page_icon=os.path.join(ASSETS_PATH, "favicon.ico"),
-        layout="centered",
+        page_icon=os.path.join(ASSETS_PATH, "favicon.ico"), # TODO
+        layout="wide",
         initial_sidebar_state="auto",
     )
 

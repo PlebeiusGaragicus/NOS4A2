@@ -18,45 +18,35 @@ from admin_panel.settings import load_settings, load_settings_files
 from admin_panel.components.followers import follower_component
 from admin_panel.components.relays import relay_component
 from admin_panel.components.status import status_component
-from admin_panel.components.keys import keys_component
 from admin_panel.components.publish import post_component
 from admin_panel.components.new_bot import new_bot_component
-from admin_panel.components.fetch_inbox import fetch_inbox
-from admin_panel.components.database_view import database_view
+from admin_panel.components.inbox import database_view
 from admin_panel.components.profile import profile_component
 
-# from admin_panel.components.home import private_to_public
 from admin_panel.keys import private_to_npub
-
-# from src.components.home import run_home, run_inbox
 
 
 
 def init_if_needed():
-    if is_init("setup"): # can't use init because ... apparently it's used for cookies..??
+    if is_init("setup"): # can't use `init` because ... apparently it's used for cookies..??
         return
 
     cprint(">>> Initializing Session State", Colors.CYAN)
 
     st.session_state.setup = True
-    st.session_state.run_loop = False
+    # st.session_state.mode = "profile" # set starting page
+    st.session_state.mode = PAGES[0]["mode"]
 
-    st.session_state.mode = "profile"
 
-    # if not_init("bots"):
     load_settings_files()
-
-    # st.session_state.selected_bot = st.selectbox("Select Bot", st.session_state.bots)
-    # if st.session_state.selected_bot is not None:
-    #     load_settings()
 
 
 
 PAGES = [
-    {"label": "✍️ :green[Post]", "mode": "post", "callback": post_component},
     {"label": "📪 :blue[Inbox]", "mode": "inbox", "callback": database_view},
-    {"label": "🐸 :orange[Frens]", "mode": "frens", "callback": follower_component},
+    {"label": "✍️ :green[Post]", "mode": "post", "callback": post_component},
     {"label": "🤖 :red[Profile]", "mode": "profile", "callback": profile_component},
+    {"label": "🐸 :orange[Frens]", "mode": "frens", "callback": follower_component},
     {"label": "📡 :grey[Relays]", "mode": "relays", "callback": relay_component},
     {"label": "🎯 :violet[Status]", "mode": "status", "callback": status_component},
 ]
@@ -64,28 +54,33 @@ PAGES = [
 
 
 def main_page():
-    # column_fix()
+    # column_fix() # this messes up the profile page...
     cprint("\nmain()\n", Colors.YELLOW)
 
     with st.sidebar:
-        # st.header(":red[NOS]:green[4]:blue[A2] 🧛🏻‍♂️")
         st.header(":red[NOS]:green[4]:blue[A2] 🧛‍♂️")
-        # st.header("", divider="rainbow")
-        st.session_state.selected_bot = st.selectbox("Bot Account", st.session_state.bots)
-
         st.caption(f"v{VERSION}")
-
-    # with st.sidebar:
+        st.session_state.selected_bot = st.selectbox("Bot Account", st.session_state.bots)
 
     if st.session_state.selected_bot is not None:
         load_settings()
 
     with st.sidebar:
-        npub = st.session_state.settings.get("private_key", "No private key set")
-        st.caption(private_to_npub(npub))
+        name = st.session_state.settings.get("name", "Anonymous")
+        # center_text("h1", f"{st.session_state.selected_bot}", )
+        center_text("h1", f"{name}", )
+        if npub := st.session_state.settings.get("private_key", None):
+            short_pub = private_to_npub(npub)[-8:] + "..." + private_to_npub(npub)[-6:]
+            # with st.popover(f":grey[npub]:green[{short_pub}]"):
+            with st.popover(f"🔑 :rainbow[npub{short_pub}]", use_container_width=True):
+                st.caption(private_to_npub(npub))
+        else:
+            st.warning("No private key set")
 
-    with st.sidebar:
-        st.header("", divider="rainbow")
+        # st.header("", divider="rainbow")
+        # st.divider()
+        center_text("p", "- - - - -")
+
 
     for b in PAGES:
         if st.sidebar.button(b["label"], use_container_width=True):

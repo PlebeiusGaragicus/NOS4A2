@@ -96,9 +96,17 @@ def relay_component():
         read = "✅" if r["read"] else "❌"
         write = "✅" if r["write"] else "❌"
         with st.container(border=True):
-            st.write(f":green[{r['url']}]")
-            st.write(f"Read: {read} --- Write: {write}")
-            delete = st.button("delete", key=f"delete_{r["url"]}")
+            col2 = st.columns((1, 1, 1))
+            with col2[0]:
+                st.write(f":green[{r['url']}]")
+
+            with col2[1]:
+                # st.write(f"Read: {read}")
+                st.checkbox("read", value=r["read"], key=f"read_{r['url']}", disabled=True)
+                # st.write(f"Write: {write}")
+                st.checkbox("write", value=r["write"], key=f"write_{r['url']}", disabled=True)
+
+            delete = st.button("🗑️ :red[delete]", key=f"delete_{r["url"]}")
             if delete and st.session_state.settings["relays"]:
                 remove_relay(r["url"])
                 st.rerun()

@@ -1,4 +1,6 @@
+import os
 from datetime import datetime
+import subprocess
 
 from pymongo import MongoClient
 
@@ -18,9 +20,19 @@ def database_view():
     st.header("📪 :blue[Inbox]")
     st.header("", divider="rainbow")
 
-    refresh = st.button("Refresh")
-    if refresh:
-        st.rerun()
+
+    cols2 = st.columns((1, 1, 1))
+    with cols2[0]:
+        if st.button("run fetch"):
+            # TODO - sanitize bot_name
+            # TODO run f"nosferatu --fetch --name={st.session_state.botname}"
+            os.popen(f"nosferatu --fetch --name={st.session_state.selected_bot}")
+            st.toast("Fetching...", icon="🔄")
+            st.rerun()
+
+    with cols2[1]:
+        if st.button("Refresh"):
+            st.rerun()
 
     bot_name = st.session_state.selected_bot
 
