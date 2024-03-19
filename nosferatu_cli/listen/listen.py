@@ -22,7 +22,7 @@ from nosferatu_cli.config import MONGODB_NAME
 from nosferatu_cli.keys import hexToNpub, hexToNpub
 
 
-def init_listener(settings_json, queue, log_queue):
+def init_listener(settings_json, queue, log_queue, keep_alive):
     queue_handler = QueueHandler(log_queue)
     global logger
     logger = logging.getLogger("listener")
@@ -33,10 +33,13 @@ def init_listener(settings_json, queue, log_queue):
 
     while True:
         try:
-            listen(settings_json, queue)
+            listen(settings_json, queue, keep_alive)
         except websocket._exceptions.WebSocketConnectionClosedException:
             logger.error("WebSocketConnectionClosedException")
             exit(1)
+        
+        if not keep_alive:
+            break
 
             # TODO - retry a number of times before giving up
             # time.sleep(5)
@@ -47,7 +50,7 @@ def init_listener(settings_json, queue, log_queue):
 
 
 
-def listen(settings_json, queue):
+def listen(settings_json, queue, keep_alive):
     client = MongoClient('localhost', 27017)
     db = client[ MONGODB_NAME ]
     collection_name = settings_json['name']
@@ -135,6 +138,11 @@ def listen(settings_json, queue):
                 })
             else:
                 logger.warning(f"Duplicate event: {event_msg.event.id}")
+
+        if not keep_alive:
+            relay_manager.close_connections()
+            time.sleep(0.5)
+            break
 
 # event
 # {

@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 import subprocess
 
@@ -6,6 +7,7 @@ from pymongo import MongoClient
 
 import streamlit as st
 
+from nosferatu.common import PROJECT_DIR
 from nosferatu.keys import hexToNpub
 
 
@@ -26,8 +28,10 @@ def database_view():
         if st.button("run fetch"):
             # TODO - sanitize bot_name
             # TODO run f"nosferatu --fetch --name={st.session_state.botname}"
-            os.popen(f"nosferatu --fetch --name={st.session_state.selected_bot}")
+            # os.popen(f"nosferatu --fetch --name={st.session_state.selected_bot}")
+            subprocess.run(["nosferatu_cli", "--fetch", f"--name={st.session_state.selected_bot}"])
             st.toast("Fetching...", icon="🔄")
+            time.sleep(5)
             st.rerun()
 
     with cols2[1]:
@@ -59,15 +63,24 @@ def database_view():
             # st.write(datetime.fromtimestamp(document["created_at"]).strftime('%B %d, %Y, %H:%M:%S'))
             st.write(document["clear_text"])
 
-            with st.popover("..."):
+            cols3 = st.columns((1, 1, 1))
+            with cols3[0]:
                 delete = st.button("🗑️ :red[Delete]", key=document["_id"])
                 if delete:
                     collection.delete_one({"_id": document["_id"]})
                     st.rerun()
-                
-                block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document["_id"]}")
-                if block_purge:
-                    st.toast(f"Blocked and purged {name}", icon="🔒")
-                    collection.delete_many({"pubkey": from_pub})
-                    # TODO - add to block list
-                    st.rerun()
+
+            with cols3[1]:
+                with st.popover("..."):    
+                    block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document["_id"]}")
+                    if block_purge:
+                        st.toast(f"Blocked and purged {name}", icon="🔒")
+                        collection.delete_many({"pubkey": from_pub})
+                        # TODO - add to block list
+                        st.rerun()
+
+            # TODO - follow this account and provide a name, if not followed
+
+            with cols3[2]:
+                with st.popover("Event JSON"):
+                    st.write(document)

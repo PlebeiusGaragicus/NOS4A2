@@ -1,0 +1,1 @@
+from nosferatu_cli.main import main

@@ -5,6 +5,8 @@ venv/
 *.env
 *.yaml
 
+*.egg-info/
+
 .DS_Store
 
 runlog/

@@ -61,42 +61,101 @@ def load_settings(name):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--name", default="", help="Input your name")
+    parser.add_argument("--name", help="Specify which bot to use.  Name should be the directory name inside `~/bots/` that holds a valid settings.json file.", required=True)
+    # parser.add_argument("--fetch", action="store_true", help="Update database with new messages and exit")
+    # parser.add_argument("--run", action="store_true", help="Runs fetch in a loop.")
+    # parser.add_argument("--post", action="store_true", help="Post a message and exit")
+    exclusive_group = parser.add_mutually_exclusive_group(required=True)
+    exclusive_group.add_argument("--fetch", action="store_true", help="Update database with new messages and exit")
+    exclusive_group.add_argument("--run", action="store_true", help="Runs fetch in a loop.")
     args = parser.parse_args()
+    print(args) # TODO - remove
 
-    if args.name == "":
-        print("Please provide a name with --name")
-        exit(1)
+    # if args.post:
+    #     print("Not implemented yet")
+    #     exit(0)
+    do_the_thing(args.name, args.run)
+
+    # if args.fetch:
+    #     # setup_logging(log_queue) # TODO - I need a different logging setup for fetch!!!
+    #     # logger.debug(f"Starting Nosferatu with args: {args}")
+    #     # logger.warning("Fetching... not implemented yet!!  Quitting.")
+    #     print(f"Starting Nosferatu with args: {args}")
+    #     print("Fetching... not implemented yet!!  Quitting.")
+    #     exit(0)
+
+    # if args.run:
+    #     log_queue = Queue()
+    #     setup_logging(log_queue) # TODO - I need to watch mCoding youtube again and get real-time notifications for exceptions in production!!!
+
+    #     logger.debug(f"Starting Nosferatu --run with args: {args}")
+    #     settings = load_settings(args.name)
+
+    #     queue = Queue()
+    #     response_queue = Queue()
+
+
+    #     listener_process = Process(target=init_listener, args=(settings, queue, log_queue, ))
+    #     processor_process = Process(target=init_processor, args=(settings, queue, response_queue, log_queue, ))
+    #     sender_process = Process(target=init_sender, args=(settings, response_queue, log_queue, ))
+
+    #     listener_process.start()
+    #     processor_process.start()
+    #     sender_process.start()
+
+    #     try:
+    #         listener_process.join()
+    #         processor_process.join()
+    #         sender_process.join()
+
+    #     except KeyboardInterrupt:
+    #         logger.warning("Terminating...")
+    #         listener_process.terminate()
+    #         processor_process.terminate()
+    #         sender_process.terminate()
+    #         listener_process.join()
+    #         processor_process.join()
+    #         sender_process.join()
 
 
 
-    log_queue = Queue()
-    setup_logging(log_queue)
+def do_the_thing(name, keep_alive):
+        log_queue = Queue()
+        setup_logging(log_queue) # TODO - I need to watch mCoding youtube again and get real-time notifications for exceptions in production!!!
 
-    settings = load_settings(args.name)
+        # logger.debug(f"Starting Nosferatu --run with args: {args}")
+        settings = load_settings(name)
 
-    queue = Queue()
-    response_queue = Queue()
+        queue = Queue()
+        listener_process = Process(target=init_listener, args=(settings, queue, log_queue, keep_alive, ))
+        listener_process.start()
 
+        if keep_alive:
+            response_queue = Queue()
+            processor_process = Process(target=init_processor, args=(settings, queue, response_queue, log_queue, ))
+            sender_process = Process(target=init_sender, args=(settings, response_queue, log_queue, ))
 
-    listener_process = Process(target=init_listener, args=(settings, queue, log_queue, ))
-    processor_process = Process(target=init_processor, args=(settings, queue, response_queue, log_queue, ))
-    sender_process = Process(target=init_sender, args=(settings, response_queue, log_queue, ))
+            processor_process.start()
+            sender_process.start()
 
-    listener_process.start()
-    processor_process.start()
-    sender_process.start()
+        try:
+            listener_process.join()
 
-    try:
-        listener_process.join()
-        processor_process.join()
-        sender_process.join()
+            if keep_alive:
+                processor_process.join()
+                sender_process.join()
 
-    except KeyboardInterrupt:
-        logger.warning("Terminating...")
-        listener_process.terminate()
-        processor_process.terminate()
-        sender_process.terminate()
-        listener_process.join()
-        processor_process.join()
-        sender_process.join()
+        except KeyboardInterrupt:
+            logger.warning("Terminating...")
+            listener_process.terminate()
+
+            if keep_alive:
+                processor_process.terminate()
+                sender_process.terminate()
+
+            listener_process.join()
+
+            if keep_alive:
+                processor_process.join()
+                sender_process.join()
+

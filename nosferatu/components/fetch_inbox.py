@@ -20,6 +20,19 @@ from nosferatu.VERSION import VERSION
 
 
 
+def private_to_public(private_key: str) -> str:
+    """ provide a hex-encoded private key, and get back the hex-encoded public key """
+
+    # Decode the hex-encoded private key
+    priv = PrivateKey(bytes.fromhex(private_key))
+
+    # Get the public key
+    pub = priv.public_key.hex()
+
+    return pub
+
+
+
 def fetch_inbox():
     st.divider()
     st.header("Inbox 📪")
@@ -65,17 +78,6 @@ def fetch_inbox():
             fetched_time.write("Updated now.")
             inbox(last_updated)
 
-
-def private_to_public(private_key: str) -> str:
-    """ provide a hex-encoded private key, and get back the hex-encoded public key """
-
-    # Decode the hex-encoded private key
-    priv = PrivateKey(bytes.fromhex(private_key))
-
-    # Get the public key
-    pub = priv.public_key.hex()
-
-    return pub
 
 
 

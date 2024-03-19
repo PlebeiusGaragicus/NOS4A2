@@ -4,7 +4,7 @@ streamlit_authenticator
 
 # feedparser
 python-dateutil
-docopt
+# docopt
 
 requests
 

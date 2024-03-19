@@ -53,7 +53,7 @@ def init_processor(settings_json, queue, response_queue, log_queue):
                 "event_id": inter_process_message['event_id'],
             }
 
-            if event_to_process[0] is '/': # commands
+            if event_to_process[0] == '/': # commands
                 command = event_to_process.split(' ')[0][1:]
                 command = command.upper()
                 logger.debug("COMMAND: %s", command)
