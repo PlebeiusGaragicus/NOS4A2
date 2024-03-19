@@ -2,15 +2,17 @@ import os
 
 import streamlit as st
 
-from admin_panel.common import get
-from admin_panel.components.keys import keys_component
+from nosferatu.common import get
+from nosferatu.components.keys import keys_component
 
-from admin_panel.settings import save_settings
+from nosferatu.settings import save_settings
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from nosferatu.common import ASSETS_PATH
 
-DEFAULT_PROFILE_PIC = str(PROJECT_DIR + "/profile.png")
-DEFAULT_BANNER_PIC = str(PROJECT_DIR + "/banner.png")
+# PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+DEFAULT_PROFILE_PIC = str(ASSETS_PATH / "default_profile.png")
+DEFAULT_BANNER_PIC = str(ASSETS_PATH / "default_banner.png")
 
 def profile_component():
     st.header("🤖 :red[Profile]")

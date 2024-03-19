@@ -5,6 +5,8 @@ from typing import Union
 
 import bech32
 
+from nostr.key import PrivateKey
+
 
 # from bitcoin import random_key # TODO
 
@@ -59,6 +61,22 @@ def hexToNpub(hex: str) -> Union[None, str]:
 
     # Convert the public key to bech32
     npub = bech32.bech32_encode("npub", bech32.convertbits(decoded, 8, 5, True))
+
+    return npub
+
+
+def private_to_npub(private_key: str) -> Union[None, str]:
+    """ provide a hex-encoded private key, and get back the bech32 npub-formatted string """
+
+    # Decode the hex-encoded private key
+    priv = bytes.fromhex(private_key)
+
+    # Convert the private key to public key
+    pub = PrivateKey(priv).public_key.hex()
+
+    # Convert the public key to bech32
+    # npub = bech32.bech32_encode("npub", bech32.convertbits(pub, 8, 5, True))
+    npub = hexToNpub(pub)
 
     return npub
 

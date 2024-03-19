@@ -4,8 +4,8 @@ import json
 
 import streamlit as st
 
-from admin_panel.interface import column_fix, centered_button_trick, center_text
-from admin_panel.settings import load_settings, load_settings_files
+from nosferatu.interface import column_fix, centered_button_trick, center_text
+from nosferatu.settings import load_settings, load_settings_files
 
 def new_bot_component():
     with st.popover("New Bot"):
@@ -13,7 +13,7 @@ def new_bot_component():
             st.text_input("Bot Name", key="new_bot_name")
             submit = st.form_submit_button("Create Bot")
             if submit:
-                from admin_panel.settings import DEFAULT_SETTINGS
+                from nosferatu.settings import DEFAULT_SETTINGS
 
                 bot_dir = pathlib.Path.home() / "bots" / st.session_state.new_bot_name
                 # make new bot directory

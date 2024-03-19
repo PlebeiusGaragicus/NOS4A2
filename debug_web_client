@@ -7,4 +7,4 @@ source venv/bin/activate
 args="--server.runOnSave true --logger.level info --server.headless true"
 
 export DEBUG=true
-streamlit run $args launch_adminpanel.py
+streamlit run $args nos4a2_web.py

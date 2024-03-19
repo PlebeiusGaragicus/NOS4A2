@@ -1,6 +1,6 @@
 import streamlit as st
 
-from admin_panel.common import get
+from nosferatu.common import get
 
 def status_component():
     st.header(":violet[🎯 Status]")

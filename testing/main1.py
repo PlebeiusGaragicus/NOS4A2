@@ -10,9 +10,9 @@ from contextlib import contextmanager
 
 logger = None
 
-# from nosferatu.listen.listen import init_listener
-# from nosferatu.think.think import init_processor
-# from nosferatu.reply.reply import init_sender
+# from nosferatu_cli.listen.listen import init_listener
+# from nosferatu_cli.think.think import init_processor
+# from nosferatu_cli.reply.reply import init_sender
 
 
 

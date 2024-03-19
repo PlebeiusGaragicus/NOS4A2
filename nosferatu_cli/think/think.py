@@ -5,9 +5,9 @@ logger = None
 
 from pymongo import MongoClient
 
-from nosferatu.think.invoice import create_invoice, check_credits, decrease_credits
-from nosferatu.think.inference import process_reply
-from nosferatu.think.commands import (
+from nosferatu_cli.think.invoice import create_invoice, check_credits, decrease_credits
+from nosferatu_cli.think.inference import process_reply
+from nosferatu_cli.think.commands import (
     process_new_command,
     process_balance_command,
     process_help_command

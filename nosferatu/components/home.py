@@ -13,11 +13,11 @@ from nostr.relay_manager import RelayManager
 from nostr.message_type import ClientMessageType
 from nostr.key import PublicKey
 
-from admin_panel.keys import npubToHex, hexToNpub
+from nosferatu.keys import npubToHex, hexToNpub
 
-from admin_panel.VERSION import VERSION
+from nosferatu.VERSION import VERSION
 
-from admin_panel.common import (
+from nosferatu.common import (
     cprint,
     Colors,
     get,
@@ -26,9 +26,9 @@ from admin_panel.common import (
     is_init,
 )
 
-from admin_panel.interface import column_fix
+from nosferatu.interface import column_fix
 
-from admin_panel.settings import load_settings, save_settings
+from nosferatu.settings import load_settings, save_settings
 
 
 

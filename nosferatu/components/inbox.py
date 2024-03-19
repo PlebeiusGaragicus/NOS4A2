@@ -6,7 +6,7 @@ from pymongo import MongoClient
 
 import streamlit as st
 
-from admin_panel.keys import hexToNpub
+from nosferatu.keys import hexToNpub
 
 
 def component():

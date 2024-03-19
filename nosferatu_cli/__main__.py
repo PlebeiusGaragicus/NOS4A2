@@ -3,12 +3,12 @@ if __name__ == "__main__":
     load_dotenv()
 
     # import logging
-    # from nosferatu.logger import setup_logging
+    # from nosferatu_cli.logger import setup_logging
     # setup_logging()
     # logger = logging.getLogger("nosferatu")
-    # logger.debug("Starting Nosferatu...")
+    # logger.debug("Starting Nosferatu!")
 
-    from nosferatu.main import main
+    from nosferatu_cli.main import main
     main()
 
 

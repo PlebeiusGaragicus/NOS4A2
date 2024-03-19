@@ -3,9 +3,9 @@ logger = logging.getLogger("nosferatu")
 
 import streamlit as st
 
-from admin_panel.common import get
-from admin_panel.keithmukai import Bip39PrivateKey
-from admin_panel.settings import save_settings
+from nosferatu.common import get
+from nosferatu.keithmukai import Bip39PrivateKey
+from nosferatu.settings import save_settings
 
 from nostr.key import PrivateKey
 
