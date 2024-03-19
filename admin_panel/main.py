@@ -20,6 +20,7 @@ from admin_panel.components.keys import keys_component
 from admin_panel.components.publish import post_component
 from admin_panel.components.new_bot import new_bot_component
 from admin_panel.components.fetch_inbox import fetch_inbox
+from admin_panel.components.database_view import database_view
 
 # from src.components.home import run_home, run_inbox
 
@@ -88,7 +89,9 @@ def main_page():
 
     post_component()
 
-    fetch_inbox()
+    database_view(st.session_state.selected_bot)
+
+    # fetch_inbox()
 
 
 

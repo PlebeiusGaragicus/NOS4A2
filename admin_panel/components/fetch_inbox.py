@@ -92,8 +92,6 @@ def inbox(last_updated):
         filters = Filters([Filter(pubkey_refs=[pubkey], kinds=[EventKind.ENCRYPTED_DIRECT_MESSAGE])])
 
     subscription_id = uuid.uuid1().hex
-
-    # create a relay manager and add our relays
     relay_manager = RelayManager()
 
     relays = st.session_state.settings["relays"]
@@ -118,7 +116,7 @@ def inbox(last_updated):
     try:
         relay_manager.publish_message(message) # send the request to the relay
     except WebSocketConnectionClosedException as e:
-        st.exception(e)
+        # st.exception(e)
         st.error("Error connecting to a relay")
         st.stop()
     time.sleep(1) # allow the messages to send

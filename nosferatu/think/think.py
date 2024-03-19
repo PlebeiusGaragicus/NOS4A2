@@ -17,7 +17,7 @@ from nosferatu.think.commands import (
 def setup_logging(log_queue):
     queue_handler = QueueHandler(log_queue)
     global logger
-    logger = logging.getLogger()
+    logger = logging.getLogger("thinker")
     logger.setLevel(logging.DEBUG)
     logger.addHandler(queue_handler)
 
@@ -35,30 +35,45 @@ def init_processor(settings_json, queue, response_queue, log_queue):
     while True:
         if not queue.empty():
             inter_process_message = queue.get()
-            event_to_process = str(inter_process_message)
+            # {
+                    # "pubkey": from_pub,
+                    # "message": clear_text,
+                    # "relay": event_msg.url,
+            # }
+
+            # TODO: check if user is on block list
+
+            event_to_process = str(inter_process_message['message'])
             logger.info(f"New msg in queue: `{event_to_process}`")
 
-            # Check if first character of DM is '/'
-            if event_to_process[0] is '/':
+            reply = {
+                "pubkey": inter_process_message['pubkey'],
+                "content": None,
+                "relay": inter_process_message['relay'],
+                "event_id": inter_process_message['event_id'],
+            }
+
+            if event_to_process[0] is '/': # commands
                 command = event_to_process.split(' ')[0][1:]
                 command = command.upper()
                 logger.debug("COMMAND: %s", command)
 
                 if command == 'NEW':
-                    reply = process_new_command()
-                    response_queue.put( reply )
+                    reply.content = process_new_command()
                 elif command == 'BALANCE':
-                    reply = process_balance_command()
-                    response_queue.put( reply )
-                elif command == 'HELP':
-                    reply = process_help_command()
-                    response_queue.put( reply )
+                    reply.content = process_balance_command()
+
+                # elif command == 'HELP':
+                    # reply = process_help_command()
+                    # response_queue.put( reply )
                 else:
-                    response_queue.put( f"Unknown command: {command}" )
+                    # reply.content = f"Unknown command: {command}"
+                    reply.content = process_help_command()
 
             else:
-                response_queue.put(process_reply(f"Replying to: {event_to_process}"))
+                reply['content'] = process_reply(event_to_process)
 
+            response_queue.put( reply )
 
 
 

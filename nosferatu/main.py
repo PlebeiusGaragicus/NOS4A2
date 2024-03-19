@@ -13,20 +13,19 @@ from nosferatu.think.think import init_processor
 from nosferatu.reply.reply import init_sender
 
 
-from nosferatu.logger import ColoredFormatter, set_color, YELLOW, WHITE
+from nosferatu.logger import ColoredFormatter, set_color, YELLOW, WHITE, RED
 
 
 def setup_logging(log_queue):
     debug = os.getenv("DEBUG", False)
     if debug:
-        log_format = f"%(levelname)s | ({set_color(YELLOW)}%(filename)s @ %(lineno)d{set_color(WHITE)}) | %(message)s"
+        # log_format = f"%(levelname)s | ({set_color(YELLOW)}%(filename)s @ %(lineno)d{set_color(WHITE)}) | %(message)s"
+        log_format = f"%(levelname)s | {set_color(YELLOW)}%(name)s:{set_color(RED)}%(funcName)s{set_color(WHITE)} | %(message)s"
     else:
         log_format = "%(levelname)s | %(message)s"
 
-
-    # log_queue = Queue()
     global logger
-    logger = logging.getLogger()
+    logger = logging.getLogger("nosferatu")
     logger.setLevel(logging.DEBUG) # TODO
 
     # These logs will be shown in the console
@@ -69,19 +68,7 @@ def main():
         print("Please provide a name with --name")
         exit(1)
 
-    # log_queue = Queue()
-    # global logger
-    # logger = logging.getLogger()
-    # logger.setLevel(logging.DEBUG) # TODO
 
-    # # These logs will be shown in the console
-    # console_handler = logging.StreamHandler()
-    # console_handler.setFormatter(logging.Formatter('[%(levelname)s/%(processName)s] %(message)s'))
-    # logger.addHandler(console_handler)
-
-    # # Then create a queue listener with a default console handler and start it
-    # queue_listener = QueueListener(log_queue, console_handler)
-    # queue_listener.start()
 
     log_queue = Queue()
     setup_logging(log_queue)
