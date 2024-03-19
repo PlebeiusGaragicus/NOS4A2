@@ -23,6 +23,7 @@ from admin_panel.components.publish import post_component
 from admin_panel.components.new_bot import new_bot_component
 from admin_panel.components.fetch_inbox import fetch_inbox
 from admin_panel.components.database_view import database_view
+from admin_panel.components.profile import profile_component
 
 # from src.components.home import run_home, run_inbox
 
@@ -54,84 +55,55 @@ def main_page():
     column_fix()
     cprint("\nmain()\n", Colors.YELLOW)
 
-    # with centered_button_trick():
     with st.sidebar:
-        st.header(":red[NOS]:green[4]:blue[A2] 🧛🏻‍♂️")
+        # st.header(":red[NOS]:green[4]:blue[A2] 🧛🏻‍♂️")
+        st.header(":red[NOS]:green[4]:blue[A2] 🧛‍♂️")
+        # st.header("", divider="rainbow")
+        st.session_state.selected_bot = st.selectbox("Bot Account", st.session_state.bots)
+
         st.caption(f"v{VERSION}")
-        st.header("", divider="rainbow")
 
-
-    # center_text("p", ":red[NOS]:green[4]:blue[A2]")
-
-    # st.header(":red[NOS]:green[4]:blue[A2]")
-
-    mobile = False
-
-
-    with st.sidebar:
-    # cside = st.columns((1, 1))
-    # with cside[0]:
-    # with centered_button_trick():
-        st.session_state.selected_bot = st.selectbox("Select Bot", st.session_state.bots)
-    
-    # with cside[1]:
+    # with st.sidebar:
 
     if st.session_state.selected_bot is not None:
         load_settings()
 
-    if mobile:
-        cols = st.columns((1, 1))
-        with cols[0]:
-            keys_component()
-    else:
-        with st.sidebar:
-            keys_component()
-
-    # with cols[1]:
     # with st.sidebar:
-    #     status_component()
+    #     keys_component()
 
     with st.sidebar:
         st.header("", divider="rainbow")
 
     with st.sidebar:
-        st.button("💬 Replies", key="replies", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'home'))
-        st.button("📪 Inbox", key="inbox", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'inbox'))
-        st.button("🎯 status", key="status", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'status'))
+        st.button("✍️ :green[Post]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'home'))
+        st.button("📪 :blue[Inbox]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'inbox'))
+        st.button("🐸 :orange[Frens]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'frens'))
+        st.button("🤖 :red[Profile]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'profile'))
+        st.button("📡 :grey[Relays]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'relays'))
+        st.button(":violet[🎯 Status]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'status'))
 
-    with st.sidebar:
-        st.header("", divider="rainbow")
-
-    # cols2 = st.columns((1, 1))
-    # with cols2[0]:
-    with st.sidebar:
-        follower_component()
-    # with cols2[1]:
-    with st.sidebar:
-        relay_component()
 
     if st.session_state.mode == "home":
         post_component()
     elif st.session_state.mode == "inbox":
         database_view(st.session_state.selected_bot)
+    elif st.session_state.mode == "frens":
+        follower_component()
+    elif st.session_state.mode == "profile":
+        profile_component()
+    elif st.session_state.mode == "relays":
+        relay_component()
     elif st.session_state.mode == "status":
         status_component()
 
-    # fetch_inbox()
-
-
-
-    ### RUN LOOP (aka home)
-    # st.header("", divider="rainbow")
-    # run_home()
-    # run_inbox()
-
     with st.sidebar:
-        st.divider()
+
 
         new_bot_component()
 
         if os.getenv("DEBUG", False):
-            st.warning("DEBUG MODE")
+            st.header("", divider="rainbow")
+            st.error("DEBUG MODE")
             with st.popover(":red[session state]"):
                 st.write(st.session_state)
+

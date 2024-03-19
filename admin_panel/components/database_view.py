@@ -14,7 +14,12 @@ def component():
 
 def database_view(bot_name):
     # st.divider()
-    st.header("Inbox 📪")
+    st.header("📪 :blue[Inbox]")
+    st.header("", divider="rainbow")
+
+    refresh = st.button("Refresh")
+    if refresh:
+        st.rerun()
 
     client = MongoClient('localhost', 27017)
 
@@ -34,8 +39,9 @@ def database_view(bot_name):
                 break
 
         with st.container(border=True):
-            st.write(f"From: :blue[{name}]")
-            st.write(datetime.fromtimestamp(document["created_at"]).strftime('%B %d, %Y, %H:%M:%S'))
+            created_at = datetime.fromtimestamp(document["created_at"]).strftime('%B %d `%y - %H:%M:%S')
+            st.write(f":green[{created_at}] | :blue[{name}]")
+            # st.write(datetime.fromtimestamp(document["created_at"]).strftime('%B %d, %Y, %H:%M:%S'))
             st.write(document["clear_text"])
 
             with st.popover("..."):

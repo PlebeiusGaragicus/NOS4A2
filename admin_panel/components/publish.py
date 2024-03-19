@@ -27,6 +27,9 @@ def connect_to_relays() -> RelayManager:
 
 def post_note(content: str):
     if not content or content == "":
+        st.toast("Nothing to post", icon="🚫")
+        time.sleep(1)
+        st.rerun()
         return
 
     relay_manager = connect_to_relays()
@@ -48,10 +51,11 @@ def post_note(content: str):
 
 
 def post_component():
-    # st.header("", divider="rainbow")
-    st.markdown(f"### :green[Post:]")
+    st.header(f"✍️ :green[Post]")
+    # st.markdown(f"### :green[Post:]")
+    st.header("", divider="rainbow")
 
-    content = st.text_area("Content", key="content")
+    content = st.text_area("What do you want to say?", key="content")
     if st.button("Post"):
         post_note(content) # sleeps for 1 second
         st.rerun()

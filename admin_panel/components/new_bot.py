@@ -8,7 +8,6 @@ from admin_panel.interface import column_fix, centered_button_trick, center_text
 from admin_panel.settings import load_settings, load_settings_files
 
 def new_bot_component():
-    # with centered_button_trick():
     with st.popover("New Bot"):
         with st.form("new_bot_form"):
             st.text_input("Bot Name", key="new_bot_name")
