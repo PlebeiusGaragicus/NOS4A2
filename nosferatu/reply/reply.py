@@ -1,19 +1,27 @@
+import time
 import logging
-logger = logging.getLogger("nospy")
+from logging.handlers import QueueHandler
+logger = None
 
 from pymongo import MongoClient
 
 
-def send_response(response, sender):
-    logger.debug(f"Sending response to {sender}: {response}")
+def setup_logging(log_queue):
+    queue_handler = QueueHandler(log_queue)
+    global logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(queue_handler)
 
-# Sender process
-def sender(response_queue):
-    logger.error("sender() not yet implemented")
-    exit(1)
+
+
+def init_sender(settings_json, response_queue, log_queue):
+    setup_logging(log_queue)
+    logger.info("Sender started for %s", settings_json['name'])
+
+
 
     while True:
         if not response_queue.empty():
             response = response_queue.get()
-            sender = get_sender()
-            send_response(response, sender)
+            logger.info(f"Replying with:\n{response}")

@@ -1,7 +1,7 @@
 import time
 import ssl
 import logging
-logger = logging.getLogger("nospy")
+logger = logging.getLogger("nosferatu")
 
 import streamlit as st
 

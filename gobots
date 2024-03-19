@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source venv/bin/activate
+
+
+export DEBUG=true
+
+python3 -m nosferatu "$@"
+
+# args="--nothing"
+# streamlit run $args launch_adminpanel.py

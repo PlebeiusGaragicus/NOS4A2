@@ -1,6 +1,5 @@
 import logging
-logger = logging.getLogger("nospy")
+logger = logging.getLogger("nosferatu")
 
 def process_reply(dm):
-    return dm + " was processed successfully"
-
+    return f"`{dm}`"

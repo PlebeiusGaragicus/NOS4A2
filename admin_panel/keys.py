@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger("nospy")
+logger = logging.getLogger("nosferatu")
 
 from typing import Union
 

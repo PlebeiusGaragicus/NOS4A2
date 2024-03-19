@@ -4,8 +4,11 @@ import json
 import uuid
 import ssl
 import datetime
+import websocket
 import logging
-logger = logging.getLogger("nospy")
+from logging.handlers import QueueHandler
+logger = None
+
 
 from nostr.filter import Filter, Filters
 from nostr.event import Event, EventKind
@@ -15,58 +18,74 @@ from nostr.key import PrivateKey, PublicKey
 
 from pymongo import MongoClient
 
-from nosferatu.common import cprint, Colors
+from nosferatu.config import MONGODB_NAME
 
 
+def init_listener(settings_json, queue, log_queue):
+    queue_handler = QueueHandler(log_queue)
+    global logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(queue_handler)
+    logger.info("Listener started for: %s", settings_json['name'])
 
-
-def listener(queue):
-    client = MongoClient('localhost', 27017)
-    db = client['mydatabase']
-    collection = db['mycollection']
+    # client = MongoClient('localhost', 27017)
+    # db = client[ MONGODB_NAME ]
+    # collection = db['mycollection']
 
     # while True:
     #     dm = get_dm()
     #     inserted_document = collection.insert_one(dm)
     #     queue.put(inserted_document.inserted_id)
 
-    prv = os.getenv("NOSFATTY_PRV_HEX")
+
+    while True:
+        try:
+            listen(settings_json, queue)
+        except websocket._exceptions.WebSocketConnectionClosedException:
+            logger.error("WebSocketConnectionClosedException")
+            exit(1)
+
+            # TODO - retry a number of times before giving up
+            # time.sleep(5)
+            # listen()
+
+    
+
+
+
+
+def listen(settings_json, queue):
+    prv = settings_json['private_key']
     if prv in [None, ""]:
-        cprint("NOSFATTY_PRV_HEX not set", Colors.RED)
+        logger.critical("private_key not set!")
         exit(1)
 
     prv = PrivateKey(bytes.fromhex(prv))
     pubkey = prv.public_key.hex()
 
-    # create a filter to listen for direct messages to our public key
     filters = Filters([Filter(pubkey_refs=[pubkey], kinds=[EventKind.ENCRYPTED_DIRECT_MESSAGE])])
-
-    # create a unique subscription id # TODO - I don't know what for yet
     subscription_id = uuid.uuid1().hex
-
-    # create a relay manager and add our relays
     relay_manager = RelayManager()
 
-    relays = st.session_state.settings["relays"]
-    if relays == {}:
-        cprint("You need to add a relay to run 'home'", Colors.RED)
+    relay_list = settings_json["relays"]
+    if relay_list == {}:
+        logger.critical("No relays added for bot!")
         exit(1)
 
-    for r in relays:
+    for r in relay_list:
         if r['read'] == True:
             relay_manager.add_relay(r['url'])
 
     relay_manager.add_subscription(subscription_id, filters)
     relay_manager.open_connections({"cert_reqs": ssl.CERT_NONE}) # NOTE: This disables ssl certificate verification
 
-    # create a request message to send to the relay
     request = [ClientMessageType.REQUEST, subscription_id]
     request.extend(filters.to_json_array())
     message = json.dumps(request)
 
-    # send the request to the relay
     time.sleep(1.25) # allow the connections to open
-    relay_manager.publish_message(message) # send the request to the relay
+    relay_manager.publish_message(message)
     time.sleep(1) # allow the messages to send
 
 
@@ -79,6 +98,7 @@ def listener(queue):
             from_pub = event_msg.event.public_key
             # name = hex_following[from_pub]['name'] # look up the name we gave this person
 
-            # st.write(event_msg.event.created_at)
             msg = prv.decrypt_message(event_msg.event.content, from_pub)
-            cprint(msg, Colors.BLUE)
+            # logger.info(f"INBOX: from {from_pub}: {msg}")
+            logger.info(f"NEW DM from {from_pub}:\n`{msg}`")
+            queue.put(msg)

@@ -3,7 +3,6 @@ import os
 def colorize(color: int):
     return f'\033[1;3{color}m'
 
-
 # BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
 # from enum import Enum, auto

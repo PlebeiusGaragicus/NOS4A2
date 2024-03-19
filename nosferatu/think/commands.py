@@ -1,6 +1,13 @@
 
 def process_help_command():
-    return "Help command processed successfully"
+    return """Hello! Welcome to the Nosferatu bot.
+
+    Available commands:
+    /new - Create a new thread
+    /balance - Check your balance
+    /help - Show this help message
+
+"""
 
 
 
