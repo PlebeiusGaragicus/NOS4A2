@@ -13,7 +13,7 @@ def component():
 
 
 def database_view(bot_name):
-    st.divider()
+    # st.divider()
     st.header("Inbox 📪")
 
     client = MongoClient('localhost', 27017)
@@ -37,7 +37,16 @@ def database_view(bot_name):
             st.write(f"From: :blue[{name}]")
             st.write(datetime.fromtimestamp(document["created_at"]).strftime('%B %d, %Y, %H:%M:%S'))
             st.write(document["clear_text"])
-            delete = st.button("🗑️ :red[Delete]", key=document["_id"])
-            if delete:
-                collection.delete_one({"_id": document["_id"]})
-                st.rerun()
+
+            with st.popover("..."):
+                delete = st.button("🗑️ :red[Delete]", key=document["_id"])
+                if delete:
+                    collection.delete_one({"_id": document["_id"]})
+                    st.rerun()
+                
+                block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document["_id"]}")
+                if block_purge:
+                    st.toast(f"Blocked and purged {name}", icon="🔒")
+                    collection.delete_many({"pubkey": from_pub})
+                    # TODO - add to block list
+                    st.rerun()

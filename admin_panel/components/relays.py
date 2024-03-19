@@ -63,33 +63,45 @@ def remove_relay(url):
 
 
 
-
+# @st.expander("Relays")
 def relay_component():
-    st.header("", divider="rainbow")
-    st.markdown(f"### :green[Relays:]")
+    # st.header("", divider="rainbow")
 
-    cols2 = st.columns((1, 1, 1))
+    with st.expander("📡 :green[Relays]"):
 
-    with cols2[0]:
-        with st.popover("add"):
-            with st.form("new_relay"):
-                relay_url = st.text_input(label="relay url")
-                read = st.checkbox(label="read from", value=True)
-                write = st.checkbox(label="write to", value=True)
-                if st.form_submit_button("Add Relay"):
-                    add_relay(relay_url, read, write)
+    
+        # st.markdown(f"### :green[Relays:]")
 
-    with cols2[1]:
-        with st.popover("remove"):
-            with st.form("remove_relay"):
-                remove_relay_url = st.text_input(label="relay url")
-                if st.form_submit_button("Remove Relay"):
-                    remove_relay(remove_relay_url)
+        mobile = False
+        if mobile:
+            cols2 = st.columns((1, 1, 1))
+        else:
+            cols2 = st.columns((1, 1))
 
-    for r in st.session_state.settings["relays"]:
-        # st.text_input(label="relay", value=r)
-        read = "✅" if r["read"] else "❌"
-        write = "✅" if r["write"] else "❌"
-        with st.container(border=True):
-            st.write(f":green[{r['url']}]")
-            st.write(f"Read: {read} --- Write: {write}")
+        with cols2[0]:
+            with st.popover("add"):
+                with st.form("new_relay"):
+                    relay_url = st.text_input(label="relay url")
+                    read = st.checkbox(label="read from", value=True)
+                    write = st.checkbox(label="write to", value=True)
+                    if st.form_submit_button("Add Relay"):
+                        add_relay(relay_url, read, write)
+
+        with cols2[1]:
+            with st.popover("remove"):
+                with st.form("remove_relay"):
+                    remove_relay_url = st.text_input(label="relay url")
+                    if st.form_submit_button("Remove Relay"):
+                        remove_relay(remove_relay_url)
+
+        for r in st.session_state.settings["relays"]:
+            # st.text_input(label="relay", value=r)
+            read = "✅" if r["read"] else "❌"
+            write = "✅" if r["write"] else "❌"
+            with st.container(border=True):
+                st.write(f":green[{r['url']}]")
+                st.write(f"Read: {read} --- Write: {write}")
+                delete = st.button("delete", key=f"delete_{r["url"]}")
+                if delete and st.session_state.settings["relays"]:
+                    remove_relay(r["url"])
+                    st.rerun()

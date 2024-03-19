@@ -19,17 +19,17 @@ def key_gen():
 
 
 def keys_component():
-    st.header("", divider="rainbow")
-    st.markdown(f"### :red[Keys:]")
+    # st.header("", divider="rainbow")
+    # st.markdown(f"### :red[Keys:]")
 
-    if get('settings')['private_key'] in [None, ""]:
-        st.write("No keys found.")
-        if st.button("Generate Keys"):
-            st.toast("Generating keys...", icon="🔑")
-            key_gen()
-    else:
+    with st.popover("🔑 :red[Keys:]"):
+        if get('settings')['private_key'] in [None, ""]:
+            st.write("No keys found.")
+            if st.button("Generate Keys"):
+                st.toast("Generating keys...", icon="🔑")
+                key_gen()
+        else:
 
-        with st.popover("keys"):
             # prv = get('settings')['private_key']
 
             key = get('settings')['private_key']

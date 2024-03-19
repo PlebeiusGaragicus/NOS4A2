@@ -4,6 +4,7 @@ import logging
 # http://jafrog.com/2013/11/23/colors-in-terminal.html
 # https://github.com/fidian/ansi
 # https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
+# https://docs.python.org/3/library/logging.html#formatter-objects
 
 # Define the color codes
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)

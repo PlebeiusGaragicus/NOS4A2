@@ -23,11 +23,26 @@ DEFAULT_RELAYS = [
     }
 ]
 
+DEFAULT_SETTINGS = {
+    "private_key": None,
+    "following": [],
+    "relays": DEFAULT_RELAYS,
+}
+
 def load_settings_files():
     try:
         bot_dir = pathlib.Path.home() / "bots"
         files = os.listdir(bot_dir)
-        st.session_state.bots = [f for f in files if os.path.isdir(bot_dir / f)]
+        # remove "DISABLED BOTS" from the list
+        bots = [f for f in files if os.path.isdir(bot_dir / f)]
+
+        for f in bots:
+            if f == "DISABLED_BOTS":
+                bots.remove(f)
+                break
+
+        # st.session_state.bots = [f for f in files if os.path.isdir(bot_dir / f)]
+        st.session_state.bots = bots
     except FileNotFoundError:
         st.error("bots directory not found")
         st.stop()
@@ -46,11 +61,7 @@ def load_settings():
     except FileNotFoundError:
         # st.error("settings.json not found")
         # st.stop()
-        st.session_state.settings = {
-            "private_key": "",
-            "following": [],
-            "relays": DEFAULT_RELAYS,
-        }
+        st.session_state.settings = DEFAULT_SETTINGS
         with open(bot_dir / st.session_state.selected_bot / "settings.json", "w") as f:
             json.dump(st.session_state.settings, f, indent=4)
 
