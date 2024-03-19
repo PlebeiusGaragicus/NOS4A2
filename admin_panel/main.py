@@ -25,6 +25,9 @@ from admin_panel.components.fetch_inbox import fetch_inbox
 from admin_panel.components.database_view import database_view
 from admin_panel.components.profile import profile_component
 
+# from admin_panel.components.home import private_to_public
+from admin_panel.keys import private_to_npub
+
 # from src.components.home import run_home, run_inbox
 
 
@@ -38,7 +41,7 @@ def init_if_needed():
     st.session_state.setup = True
     st.session_state.run_loop = False
 
-    st.session_state.mode = "home"
+    st.session_state.mode = "profile"
 
     # if not_init("bots"):
     load_settings_files()
@@ -49,10 +52,19 @@ def init_if_needed():
 
 
 
+PAGES = [
+    {"label": "✍️ :green[Post]", "mode": "post", "callback": post_component},
+    {"label": "📪 :blue[Inbox]", "mode": "inbox", "callback": database_view},
+    {"label": "🐸 :orange[Frens]", "mode": "frens", "callback": follower_component},
+    {"label": "🤖 :red[Profile]", "mode": "profile", "callback": profile_component},
+    {"label": "📡 :grey[Relays]", "mode": "relays", "callback": relay_component},
+    {"label": "🎯 :violet[Status]", "mode": "status", "callback": status_component},
+]
+
 
 
 def main_page():
-    column_fix()
+    # column_fix()
     cprint("\nmain()\n", Colors.YELLOW)
 
     with st.sidebar:
@@ -68,37 +80,23 @@ def main_page():
     if st.session_state.selected_bot is not None:
         load_settings()
 
-    # with st.sidebar:
-    #     keys_component()
+    with st.sidebar:
+        npub = st.session_state.settings.get("private_key", "No private key set")
+        st.caption(private_to_npub(npub))
 
     with st.sidebar:
         st.header("", divider="rainbow")
 
-    with st.sidebar:
-        st.button("✍️ :green[Post]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'home'))
-        st.button("📪 :blue[Inbox]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'inbox'))
-        st.button("🐸 :orange[Frens]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'frens'))
-        st.button("🤖 :red[Profile]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'profile'))
-        st.button("📡 :grey[Relays]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'relays'))
-        st.button(":violet[🎯 Status]", use_container_width=True, on_click=lambda: setattr(st.session_state, 'mode', 'status'))
+    for b in PAGES:
+        if st.sidebar.button(b["label"], use_container_width=True):
+            setattr(st.session_state, 'mode', b["mode"])
 
+    for b in PAGES:
+        if st.session_state.mode == b["mode"]:
+            b["callback"]()
 
-    if st.session_state.mode == "home":
-        post_component()
-    elif st.session_state.mode == "inbox":
-        database_view(st.session_state.selected_bot)
-    elif st.session_state.mode == "frens":
-        follower_component()
-    elif st.session_state.mode == "profile":
-        profile_component()
-    elif st.session_state.mode == "relays":
-        relay_component()
-    elif st.session_state.mode == "status":
-        status_component()
 
     with st.sidebar:
-
-
         new_bot_component()
 
         if os.getenv("DEBUG", False):

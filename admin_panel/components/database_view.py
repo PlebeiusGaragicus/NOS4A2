@@ -1,5 +1,6 @@
-from pymongo import MongoClient
 from datetime import datetime
+
+from pymongo import MongoClient
 
 import streamlit as st
 
@@ -12,7 +13,7 @@ def component():
     # with cols2[1]:
 
 
-def database_view(bot_name):
+def database_view():
     # st.divider()
     st.header("📪 :blue[Inbox]")
     st.header("", divider="rainbow")
@@ -20,6 +21,8 @@ def database_view(bot_name):
     refresh = st.button("Refresh")
     if refresh:
         st.rerun()
+
+    bot_name = st.session_state.selected_bot
 
     client = MongoClient('localhost', 27017)
 
