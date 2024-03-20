@@ -22,7 +22,7 @@ from nosferatu_cli.config import MONGODB_NAME
 from nosferatu_cli.keys import hexToNpub, hexToNpub
 
 
-def init_listener(settings_json, queue, log_queue, keep_alive):
+def init_listener(settings_json, queue, log_queue, keep_alive, collection_name):
     queue_handler = QueueHandler(log_queue)
     global logger
     logger = logging.getLogger("listener")
@@ -33,7 +33,7 @@ def init_listener(settings_json, queue, log_queue, keep_alive):
 
     while True:
         try:
-            listen(settings_json, queue, keep_alive)
+            listen(settings_json, queue, keep_alive, collection_name)
         except websocket._exceptions.WebSocketConnectionClosedException:
             logger.error("WebSocketConnectionClosedException")
             exit(1)
@@ -50,14 +50,14 @@ def init_listener(settings_json, queue, log_queue, keep_alive):
 
 
 
-def listen(settings_json, queue, keep_alive):
+def listen(settings_json, queue, keep_alive, collection_name):
     client = MongoClient('localhost', 27017)
     db = client[ MONGODB_NAME ]
-    try:
-        collection_name = settings_json['name'] # TODO - this should not be the name inside settings.json!  This should be the directory name!
-    except KeyError:
-        logger.critical("settings.json missing 'name' key")
-        exit(1)
+    # try:
+    #     # collection_name = settings_json['name'] # TODO - this should not be the name inside settings.json!  This should be the directory name!
+    # except KeyError:
+    #     logger.critical("settings.json missing 'name' key")
+    #     exit(1)
 
     collection = db[ collection_name ]
 

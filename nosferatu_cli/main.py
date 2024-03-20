@@ -79,7 +79,7 @@ def main():
     # if args.post:
     #     print("Not implemented yet")
     #     exit(0)
-    do_the_thing(args.name, args.run)
+    do_the_thing(args.name, args.run, args.name) # NOTE: the directory of the bot files is the mongodb collection name of the bot's messages, etc
 
     # if args.fetch:
     #     # setup_logging(log_queue) # TODO - I need a different logging setup for fetch!!!
@@ -124,7 +124,7 @@ def main():
 
 
 
-def do_the_thing(name, keep_alive):
+def do_the_thing(name, keep_alive, collection_name):
         log_queue = Queue()
         setup_logging(log_queue) # TODO - I need to watch mCoding youtube again and get real-time notifications for exceptions in production!!!
 
@@ -132,7 +132,7 @@ def do_the_thing(name, keep_alive):
         settings = load_settings(name)
 
         queue = Queue()
-        listener_process = Process(target=init_listener, args=(settings, queue, log_queue, keep_alive, ))
+        listener_process = Process(target=init_listener, args=(settings, queue, log_queue, keep_alive, collection_name))
         listener_process.start()
 
         if keep_alive:
