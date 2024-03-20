@@ -1,7 +1,3 @@
-Don't pay any attention to me - this isn't the repo you're looking for.
-
----
-
 
 ```sh
 # brew install python@3.11

@@ -53,7 +53,7 @@ def setup_logging(log_queue):
 
     # Then create a queue listener with a default console handler and start it
     queue_listener = QueueListener(log_queue, console_handler)
-    queue_listener.start()
+    queue_listener.start() # TODO - don't I have to stop this at some point?  I think I do...
 
 
 
