@@ -6,9 +6,6 @@ from typing import Union
 import bech32
 
 
-# from bitcoin import random_key # TODO
-
-
 def npubToHex(npub: str) -> Union[None, str]:
     """ provide a bech32 npub-formatted string, and get back the hex-encoded public key """
 

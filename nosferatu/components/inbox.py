@@ -70,17 +70,17 @@ def database_view():
                     collection.delete_one({"_id": document["_id"]})
                     st.rerun()
 
-            with cols3[1]:
-                with st.popover("..."):    
-                    block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document['_id']}")
-                    if block_purge:
-                        st.toast(f"Blocked and purged {name}", icon="🔒")
-                        collection.delete_many({"pubkey": from_pub})
-                        # TODO - add to block list
-                        st.rerun()
+            # with cols3[1]:
+            with cols3[2].popover("..."):    
+                block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document['_id']}")
+                if block_purge:
+                    st.toast(f"Blocked and purged {name}", icon="🔒")
+                    collection.delete_many({"pubkey": from_pub})
+                    # TODO - add to block list
+                    st.rerun()
 
             # TODO - follow this account and provide a name, if not followed
 
-            with cols3[2]:
-                with st.popover("Event JSON"):
-                    st.write(document)
+            # with cols3[2]:
+            with cols3[2].popover("Event JSON"):
+                st.write(document)

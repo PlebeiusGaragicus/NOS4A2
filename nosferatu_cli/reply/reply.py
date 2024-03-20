@@ -12,7 +12,7 @@ from nostr.key import PrivateKey
 
 from pymongo import MongoClient
 
-from nosferatu_cli.config import MONGODB_NAME
+from nosferatu_cli.db import MONGODB_NAME
 
 def setup_logging(log_queue):
     queue_handler = QueueHandler(log_queue)

@@ -18,7 +18,7 @@ from nostr.key import PrivateKey, PublicKey
 
 from pymongo import MongoClient
 
-from nosferatu_cli.config import MONGODB_NAME
+from nosferatu_cli.db import MONGODB_NAME
 from nosferatu_cli.keys import hexToNpub, hexToNpub
 
 
