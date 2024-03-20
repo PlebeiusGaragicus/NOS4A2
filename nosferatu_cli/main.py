@@ -8,6 +8,7 @@ logger = None
 from multiprocessing import Process, Queue
 from contextlib import contextmanager
 
+# from nosferatu_cli.version import VERSION
 from nosferatu_cli.listen.listen import init_listener
 from nosferatu_cli.think.think import init_processor
 from nosferatu_cli.reply.reply import init_sender
@@ -62,13 +63,17 @@ def load_settings(name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", help="Specify which bot to use.  Name should be the directory name inside `~/bots/` that holds a valid settings.json file.", required=True)
-    # parser.add_argument("--fetch", action="store_true", help="Update database with new messages and exit")
-    # parser.add_argument("--run", action="store_true", help="Runs fetch in a loop.")
-    # parser.add_argument("--post", action="store_true", help="Post a message and exit")
     exclusive_group = parser.add_mutually_exclusive_group(required=True)
     exclusive_group.add_argument("--fetch", action="store_true", help="Update database with new messages and exit")
     exclusive_group.add_argument("--run", action="store_true", help="Runs fetch in a loop.")
+
+    from nosferatu_cli.version import VERSION # avoids a circular import... but I'm not sure why this doesn't work as well as nospy
+    parser.add_argument('--version', action='version', version=f'%(prog)s {VERSION}')
+
     args = parser.parse_args()
+
+
+
     print(args) # TODO - remove
 
     # if args.post:

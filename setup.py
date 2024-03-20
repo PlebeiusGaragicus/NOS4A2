@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
-from nosferatu_cli.version import VERSION
+# from nosferatu_cli.version import VERSION
+VERSION = '0.1.1' # TODO - why the fuck doesn't this work?  It works for my nospy... FUUUUUUUUU
 
 setup(
     name='nosferatu_cli',
@@ -12,14 +13,16 @@ setup(
     packages=find_packages(),
     install_requires=[
         # List your app's dependencies here
+        # 'nostr',
+
         'python-dotenv',
+        'websocket-client',
+        # 'requests',
+        'embit',
         'bitcoin',
         'bech32',
-        # 'nostr',
-        'embit',
         'bip32',
-        'bip39'
-        # brew install autoconf automake libtool pkg-config
+        'bip39',
     ],
     classifiers=[
         # Choose classifiers from https://pypi.org/classifiers/

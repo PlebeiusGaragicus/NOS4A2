@@ -6,6 +6,12 @@ streamlit_authenticator
 python-dateutil
 # docopt
 
+# TODO
+# brew install mongodb-community
+pymongo
+
+websocket-client
+# websocket
 requests
 
 embit

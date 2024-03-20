@@ -79,6 +79,6 @@ def follower_component():
         with st.container(border=True):
             # st.write(f":green[{p['name']}]", " : ", f":blue[{short_pub}]")
             st.write(f":blue[{p['name']}]")
-            st.write(f":green[{p["npub"]}]")
+            st.write(f":green[{p['npub']}]")
 
             st.button(":red[delete]", key=f"delete_{p}", on_click=unfollow, args=(p['npub'],))

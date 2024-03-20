@@ -106,7 +106,7 @@ def relay_component():
                 # st.write(f"Write: {write}")
                 st.checkbox("write", value=r["write"], key=f"write_{r['url']}", disabled=True)
 
-            delete = st.button("🗑️ :red[delete]", key=f"delete_{r["url"]}")
+            delete = st.button("🗑️ :red[delete]", key=f"delete_{r['url']}")
             if delete and st.session_state.settings["relays"]:
                 remove_relay(r["url"])
                 st.rerun()

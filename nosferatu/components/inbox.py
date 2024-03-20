@@ -72,7 +72,7 @@ def database_view():
 
             with cols3[1]:
                 with st.popover("..."):    
-                    block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document["_id"]}")
+                    block_purge = st.button("🔒 :red[Block & Purge]", key=f"blockpurge_{document['_id']}")
                     if block_purge:
                         st.toast(f"Blocked and purged {name}", icon="🔒")
                         collection.delete_many({"pubkey": from_pub})

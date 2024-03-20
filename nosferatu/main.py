@@ -31,12 +31,15 @@ def init_if_needed():
     if is_init("setup"): # can't use `init` because ... apparently it's used for cookies..??
         return
 
+    # ensure that ~/bots/ exists
+    if not os.path.exists(os.path.expanduser("~/bots")):
+        os.makedirs(os.path.expanduser("~/bots"))
+
     cprint(">>> Initializing Session State", Colors.CYAN)
 
     st.session_state.setup = True
     # st.session_state.mode = "profile" # set starting page
     st.session_state.mode = PAGES[0]["mode"]
-
 
     load_settings_files()
 
