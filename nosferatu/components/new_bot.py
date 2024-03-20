@@ -20,5 +20,7 @@ def new_bot_component():
                 bot_dir.mkdir(exist_ok=True)
                 with open(bot_dir / "settings.json", "w") as f:
                     json.dump( DEFAULT_SETTINGS, f, indent=4 )
-                
+
+                del st.session_state.setup # force init_if_needed to re-load all bot directories
+                # TODO - I'm not a fan of the bot account always resetting to the first one in the list... perhaps we can make it a persistant UI element?
                 st.rerun()

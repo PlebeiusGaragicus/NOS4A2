@@ -41,6 +41,14 @@ def load_settings_files():
                 bots.remove(f)
                 break
 
+        if len(bots) == 0:
+            st.error("No bots found in ~/bots")
+            # make an empty directory inside ~/bots
+            os.makedirs(bot_dir / "DISABLED_BOTS", exist_ok=True)
+            os.makedirs(bot_dir / "my_first_bot", exist_ok=True)
+            # st.stop()
+            st.rerun()
+
         # st.session_state.bots = [f for f in files if os.path.isdir(bot_dir / f)]
         st.session_state.bots = bots
     except FileNotFoundError:
