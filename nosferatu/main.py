@@ -56,7 +56,7 @@ PAGES = [
 
 
 
-def main_page():
+def main_page(authenticator):
     # column_fix() # this messes up the profile page...
     cprint("\nmain()\n", Colors.YELLOW)
 
@@ -96,6 +96,8 @@ def main_page():
 
     with st.sidebar:
         new_bot_component()
+
+        authenticator.logout()
 
         if os.getenv("DEBUG", False):
             st.header("", divider="rainbow")
