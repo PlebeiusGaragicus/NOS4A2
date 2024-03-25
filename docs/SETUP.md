@@ -92,7 +92,7 @@ pip install -r requirements.txt
 
 ... the easy way!!! ;)
 ```sh
-sh generate_auth_yaml.sh
+bash generate_auth_yaml.sh # do not use `sh` or it won't work
 ```
 
 ## create the `.env` file with API keys
@@ -119,7 +119,7 @@ After=network.target
 [Service]
 User=satoshi
 WorkingDirectory=/home/satoshi/NOS4A2
-ExecStart=/bin/bash -c "/home/satoshi/NOS4A2/production"
+ExecStart=/bin/bash -c "/home/satoshi/NOS4A2/production_web_client"
 Restart=on-failure
 RestartSec=5s
 

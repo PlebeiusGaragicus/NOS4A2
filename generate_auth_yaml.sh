@@ -12,7 +12,7 @@ read username
 
 # ask for a password
 echo "Enter your password:"
-read -s password
+read -s password # doesn't work when you run script with `sh generate_auth_yaml.sh` use `bash` instead
 
 # python3.11 -c "import streamlit_authenticator as stauth; print(stauth.Hasher(['$password']).generate()[0])"
 # import streamlit_authenticator as stauth
