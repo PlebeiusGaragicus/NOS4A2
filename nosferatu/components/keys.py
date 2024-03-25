@@ -3,11 +3,13 @@ logger = logging.getLogger("nosferatu")
 
 import streamlit as st
 
+from nostr.key import PrivateKey
+
 from nosferatu.common import get
+from nosferatu.keys import nsecToHex
 from nosferatu.keithmukai import Bip39PrivateKey
 from nosferatu.settings import save_settings
 
-from nostr.key import PrivateKey
 
 
 def key_gen():
@@ -28,6 +30,15 @@ def keys_component():
             if st.button("Generate Keys"):
                 st.toast("Generating keys...", icon="🔑")
                 key_gen()
+            
+            with st.form("Import key"):
+                st.text_input("nsec", key="nsec")
+                if st.form_submit_button("Import"):
+                    nsec_hex = nsecToHex( st.session_state.nsec )
+                    prv_hex = PrivateKey( bytes.fromhex( nsec_hex ) ).hex()
+                    st.session_state.settings["private_key"] = prv_hex
+                    save_settings()
+                    st.rerun()
         else:
 
             # prv = get('settings')['private_key']

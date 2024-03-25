@@ -7,7 +7,8 @@ from pymongo import MongoClient
 
 import streamlit as st
 
-from nosferatu.common import PROJECT_DIR
+from nostr.key import PrivateKey
+from nosferatu.common import PROJECT_DIR, get
 from nosferatu.keys import hexToNpub
 
 
@@ -29,9 +30,9 @@ def database_view():
             # TODO - sanitize bot_name
             # TODO run f"nosferatu --fetch --name={st.session_state.botname}"
             # os.popen(f"nosferatu --fetch --name={st.session_state.selected_bot}")
-            subprocess.run(["nosferatu_cli", "--fetch", f"--name={st.session_state.selected_bot}"])
+            subprocess.run(["nosferatu_cli", "--bot_dir_name", st.session_state.selected_bot, "--fetch"])
             st.toast("Fetching...", icon="🔄")
-            time.sleep(5)
+            time.sleep(3)
             st.rerun()
 
     with cols2[1]:
@@ -39,15 +40,26 @@ def database_view():
             st.rerun()
 
     bot_name = st.session_state.selected_bot
+    # collection_name = bot_name
 
-    client = MongoClient('localhost', 27017)
+    from nosferatu.database import database
+    db = database()
+    # client = MongoClient('localhost', 27017)
+    # db = client[ "nosferatu" ]
+    key = get('settings')['private_key']
+    if key in [None, ""]:
+        st.error("Generate a key first!")
+        return
 
-    db = client[ "nosferatu" ]
-    collection_name = bot_name
+    prv = PrivateKey( bytes.fromhex(key) )
+    collection_name = str(prv.public_key.hex())
     collection = db[ collection_name ]
 
     # find all database entries with "kind": "ENCRYPTED_DIRECT_MESSAGE"
     cursor = collection.find({"kind": "ENCRYPTED_DIRECT_MESSAGE"}).sort("created_at", -1)
+    st.toast("PULLING FROM DATABASE", icon="🥵")
+    # TODO - I want to pull from the database on load, and when requested.
+    # I don't want to pull from the database every time the page is refreshed (that is, for each on-page interaction)
 
     for document in cursor:
         from_pub = document["pubkey"]

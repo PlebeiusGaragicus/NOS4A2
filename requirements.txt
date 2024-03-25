@@ -21,6 +21,9 @@ bech32
 bip32
 bip39
 
+# nostr_sdk
+nostr_protocol
+nostr_sdk
 
 # nostr # for fuck sake this project is not up-to-date on pypi
 # git+https://github.com/jeffthibault/python-nostr.git # for fuck sake this code is broken!!!

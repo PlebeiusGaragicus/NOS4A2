@@ -1,5 +1,6 @@
 import os
 import json
+import atexit
 import logging
 logger = None
 
@@ -31,6 +32,9 @@ class ColoredFormatter(logging.Formatter):
         return super().format(record)
 
 
+# TODO mCoding logging
+# https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/135_modern_logging/main.py
+# https://www.youtube.com/watch?v=X7vBbelRXn0
 def setup_logging(log_queue):
     # from nosferatu_cli.logger import ColoredFormatter, set_color, YELLOW, WHITE, RED
     from logging.handlers import QueueHandler, QueueListener
@@ -54,6 +58,8 @@ def setup_logging(log_queue):
     # Then create a queue listener with a default console handler and start it
     queue_listener = QueueListener(log_queue, console_handler)
     queue_listener.start() # TODO - don't I have to stop this at some point?  I think I do...
+    return queue_listener
+    # atexit.register(queue_listener.stop)
 
 
 
@@ -68,11 +74,37 @@ def load_settings(name):
                 logger.debug(f"Loaded settings.json for {name}")
                 return settings
         except json.JSONDecodeError:
-            logger.error(f"settings.json not valid for {name}")
+            logger.critical(f"settings.json not valid for {name}")
+            return None
     else:
         logger.warning(f"settings.json not found for {name}")
         exit(1)
 
+
+
+USAGE = """
+
+nosferatu_cli [-h] [--version] --bot_dir_name=plebbybot (--fetch-only | --reply-only | --fetch-reply | --daemon)
+
+--fetch
+    Fetch new messages from relays and save to database.
+
+--reply
+    Reply to any messages recieved or stored in database not yet replied to.
+
+--keep-alive
+    Run in a loop.
+
+---
+
+
+
+--fetch
+--reply
+--fetch-reply
+--daemon
+
+"""
 
 
 
@@ -82,62 +114,104 @@ def main():
 
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--name", help="Specify which bot to use.  Name should be the directory name inside `~/bots/` that holds a valid settings.json file.", required=True)
-    exclusive_group = parser.add_mutually_exclusive_group(required=True)
-    exclusive_group.add_argument("--fetch", action="store_true", help="Update database with new messages and exit")
-    exclusive_group.add_argument("--run", action="store_true", help="Runs fetch in a loop.")
 
     from nosferatu_cli.version import VERSION # avoids a circular import... but I'm not sure why this doesn't work as well as nospy
     parser.add_argument('--version', action='version', version=f'%(prog)s {VERSION}')
+    parser.add_argument("--bot_dir_name", help="Name of directory inside `~/bots/` that contains the bot's settings.json file.", required=True)
+    exclusive_group = parser.add_mutually_exclusive_group(required=True)
+    exclusive_group.add_argument("--fetch", action="store_true", help="Fetch new messages from relays and save to database, then exit.")
+    exclusive_group.add_argument("--reply", action="store_true", help="Reply to messages stored in database not yet replied to.")
+    exclusive_group.add_argument("--daemon", action="store_true", help="Run in a loop, fetching and replying to messages.")
     args = parser.parse_args()
-    # Namespace(name='nosfatty', fetch=True, run=False)
-
-    do_the_thing(args.name, args.run, args.name) # NOTE: the directory of the bot files is the mongodb collection name of the bot's messages, etc
-
+    print("args:", args) # Namespace(bot_dir_name='nosfatty', fetch=True, reply=False, daemon=False)
+    # exit(0)
 
 
-def do_the_thing(name, keep_alive, collection_name):
     from multiprocessing import Process, Queue
-    from nosferatu_cli.listen.listen import init_listener
-
     log_queue = Queue()
-    # from nosferatu_cli.logger import setup_logging
-    setup_logging(log_queue) # TODO - I need to watch mCoding youtube again and get real-time notifications for exceptions in production!!!
+    # TODO - I need to watch mCoding youtube again and get real-time notifications for exceptions in production!!!
+    queue_listener = setup_logging(log_queue)
 
-    settings = load_settings(name)
+    settings = load_settings(args.bot_dir_name)
+    if settings is None:
+        logger.critical(f"settings.json not found for bot `{args.bot_dir_name}`")
+        exit(1)
 
-    queue = Queue()
-    listener_process = Process(target=init_listener, args=(settings, queue, log_queue, keep_alive, collection_name))
-    listener_process.start()
 
-    if keep_alive:
+    if args.daemon:
+        msg_queue = Queue()
+        reply_queue = Queue()
+    else:
+        msg_queue = None
+        reply_queue = None
+
+
+    if args.fetch or args.daemon:
+        from nosferatu_cli.listen.listen import init_listener
+        listener_process = Process(target=init_listener, args=(settings, log_queue, msg_queue, reply_queue, args.daemon))
+        listener_process.daemon = True
+        listener_process.start()
+
+    if args.reply or args.daemon:
+        logger.error("Not yet implemented!")
+        exit()
         from nosferatu_cli.think.think import init_processor
-        from nosferatu_cli.reply.reply import init_sender
-
-        response_queue = Queue()
-        processor_process = Process(target=init_processor, args=(settings, queue, response_queue, log_queue, ))
-        sender_process = Process(target=init_sender, args=(settings, response_queue, log_queue, ))
-
+        processor_process = Process(target=init_processor, args=(settings, log_queue, msg_queue, reply_queue, args.daemon))
+        processor_process.daemon = True
         processor_process.start()
-        sender_process.start()
+
 
     try:
-        listener_process.join()
+        if args.fetch or args.daemon:
+            listener_process.join()
 
-        if keep_alive:
+        if args.reply or args.daemon:
             processor_process.join()
-            sender_process.join()
 
     except KeyboardInterrupt:
-        logger.warning("Terminating...")
-        listener_process.terminate()
 
-        if keep_alive:
+        # Stop child processes
+        if args.fetch or args.daemon:
+            listener_process.terminate()
+        
+        if args.reply or args.daemon:
             processor_process.terminate()
-            sender_process.terminate()
 
-        listener_process.join()
+        # then wait for the processes to completely close
+        if args.fetch or args.daemon:
+            listener_process.join()
 
-        if keep_alive:
+        if args.reply or args.daemon:
             processor_process.join()
-            sender_process.join()
+
+    queue_listener.stop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # try:
+    # except KeyboardInterrupt:
+    #     logger.warning("Terminating...")
+    #     listener_process.terminate()
+
+    #     if keep_alive:
+    #         processor_process.terminate()
+    #         # sender_process.terminate()
+
+    #     listener_process.join()
+
+    #     if keep_alive:
+    #         processor_process.join()
+    #         # sender_process.join()
+

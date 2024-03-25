@@ -21,7 +21,8 @@ def setup_logging(log_queue):
     logger.setLevel(logging.DEBUG)
     logger.addHandler(queue_handler)
 
-
+# TODO - bulk ollama
+# https://docs.litellm.ai/
 
 def init_processor(settings_json, queue, response_queue, log_queue):
     setup_logging(log_queue)
