@@ -101,10 +101,10 @@ def login_router_page():
     # https://blog.streamlit.io/streamlit-authenticator-part-1-adding-an-authentication-component-to-your-app/
     # https://github.com/mkhorasani/Streamlit-Authenticator?ref=blog.streamlit.io
     authenticator.login(location="main", max_concurrent_users=1, fields={
-        "Form name": "PlebChat login",
+        "Form name": "NOS4A2 login",
         "Username": "Username",
         "Password": "Password",
-        "Login": "Enter ye!",
+        "Login": "Let slip!",
     })
 
 
