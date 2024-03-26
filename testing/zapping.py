@@ -27,7 +27,7 @@ client.connect()
 
 
 pk = PublicKey.from_bech32("npub1xegedgkkjf24pl4d76cdwhufacng5hapzjnrtgms3pyhlvmyqj9suym08k")
-client.zap(ZapEntity.public_key(pk), 20, None)
+client.zap(ZapEntity.public_key(pk), 10, None)
 
 
 
